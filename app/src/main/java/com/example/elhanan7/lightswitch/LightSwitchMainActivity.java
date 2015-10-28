@@ -16,6 +16,16 @@ public class LightSwitchMainActivity extends AppCompatActivity {
 
     final String USER_AGENT = "Mozilla/5.0";
 
+    public boolean isSwitchIsOn() {
+        return switchIsOn;
+    }
+
+    public void setSwitchIsOn(boolean switchIsOn) {
+        this.switchIsOn = switchIsOn;
+    }
+
+    private boolean switchIsOn;
+
     private int getCurrentValue() throws Exception {
         URL url = new URL("http://10.0.0.6:8080/get");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -46,6 +56,11 @@ public class LightSwitchMainActivity extends AppCompatActivity {
 
     private class GetStatusTask extends AsyncTask<Void, Void, Integer> {
 
+        private LightSwitchMainActivity m_activity;
+        public GetStatusTask(LightSwitchMainActivity activity) {
+            m_activity = activity;
+        }
+
         @Override
         protected Integer doInBackground(Void... r) {
             try {
@@ -60,9 +75,11 @@ public class LightSwitchMainActivity extends AppCompatActivity {
 
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine = in.readLine();
-                if (inputLine.equals("OFF")) {
+                if (inputLine.equals("off")) {
+                    Log.d("LightSwitchResult", "off");
                     return 0;
                 } else {
+                    Log.d("LightSwitchResult", "on");
                     return 1;
                 }
             }
@@ -74,6 +91,19 @@ public class LightSwitchMainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Integer i) {
+            Button btn = (Button) m_activity.findViewById(R.id.switchButton);
+            if (i.equals(0)) {
+                btn.setText(R.string.turn_off_str);
+                btn.setEnabled(true);
+            }
+            else if (i.equals(1)) {
+                btn.setText(R.string.turn_on_str);
+                btn.setEnabled(true);
+            }
+            else {
+                btn.setText(R.string.turn_off_str);
+                btn.setEnabled(false);
+            }
 
         }
     }
