@@ -117,7 +117,7 @@ public class LightSwitchMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    new GetStatusTask().execute();
+                    new GetStatusTask(LightSwitchMainActivity.this).execute();
                 }
                 catch (Exception e) {
                     Log.d("SendRequest", "Exception " + e);
